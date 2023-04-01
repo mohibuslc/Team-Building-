@@ -1,23 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Details from "./user-details/Details";
 
 function App() {
+  const [team, setTeam] = useState([]);
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await axios("https://jsonplaceholder.typicode.com/users");
+        setTeam(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  });
+
+  const addMember = (email) => {
+    const updateCart = [...cart, email ];
+    setCart(updateCart);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h3>welcome to team-Bulding Soft</h3>
+       <p>user: {team.length}</p>
+      <h2>Add-Member</h2>
+      <div style={{ border: "1px solid red", margin: "10px",padding:"10px" }}>
+        {cart.length === 0 ? (
+          <p>Your cart is empty</p>
+        ) : (
+          <ul>
+            {cart.map((email, idx) => (
+              <li key={idx}>{email}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <Details info={team} addMember={addMember} />
     </div>
   );
 }
